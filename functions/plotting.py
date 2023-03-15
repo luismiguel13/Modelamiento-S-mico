@@ -158,3 +158,52 @@ def plot_image(data, vmin=None, vmax=None, colorbar=True, cmap="gray"):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         plt.colorbar(plot, cax=cax)
     plt.show()
+
+def plot_stacking_chart(num_shots_n,x0,L,long,ac):
+    """
+    Plot stacking chart of a number of shots to seismic land acquisition.
+
+    Parameters
+    ----------
+    num_shots_n : int
+        Number of shots.
+    x0 : int
+        Initial position.
+    L : int
+        Length line of receivers.
+    long : int 
+        The meters to move the line of receivers and the source.        
+    ac : str
+        Type of seismic acquisition.
+    """
+    num_receivers = 128  
+    if ac == 'land':
+        SX = np.linspace(x0+L//2,x0+L+long-L//2,num_shots_n)
+
+        for i,sx in enumerate(SX):
+            rx1 = sx-(L/2) 
+            rx2 = sx+(L/2)   
+            rec_sxi = np.linspace(rx1,rx2,num=num_receivers)
+            t_i = np.ones((num_receivers,1))*sx
+            plt.plot(rec_sxi,t_i,'-gD')
+            plt.plot(sx,t_i[0],'-ro')
+            
+        plt.xlabel("X position (m)")
+        plt.ylabel("Position Source (m)")
+        plt.show()
+        
+    if ac == 'marine':
+        dist_sx = (L//num_receivers)*2
+        SX = np.linspace(L+x0+dist_sx,L+x0+dist_sx+long,num_shots_n)
+
+        for i,sx in enumerate(SX):
+            rx1 = sx - L - dist_sx
+            rx2 = sx - dist_sx    
+            rec_sxi = np.linspace(rx1,rx2,num=num_receivers)
+            t_i = np.ones((num_receivers,1))*sx
+            plt.plot(rec_sxi,t_i,'-gD')
+            plt.plot(sx,t_i[0],'-ro')
+            
+        plt.xlabel("X position (m)")
+        plt.ylabel("Position Source (m)")
+        plt.show()
